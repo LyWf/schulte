@@ -41,9 +41,9 @@
 
     if (currentRound === totalRounds) {
       dispatch('done', results);
+    } else {
+      runAutoStartCountdown();
     }
-
-    runAutoStartCountdown();
   }
   const handleStartRound = () => {
     currentRound += 1;
@@ -52,12 +52,13 @@
 
   const runAutoStartCountdown = () => {
     const interval = setInterval(() => {
-      if (autoStartCountdown === 0) {
+      if (autoStartCountdown <= 0) {
         clearInterval(interval);
         autoStartCountdown = 5;
         handleStartRound();
+      } else {
+        autoStartCountdown -= 1;
       }
-      autoStartCountdown -= 1;
     }, 1000);
   }
 </script>
