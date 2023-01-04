@@ -1,6 +1,6 @@
 {
 	"name": "schulte",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
@@ -27,7 +27,7 @@
 		"svelte": "^3.54.0",
 		"svelte-check": "^2.9.2",
 		"tslib": "^2.4.1",
-		"typescript": "^4.9.3",
+		"typescript": "^4.9.4",
 		"vite": "^4.0.0",
 		"vitest": "^0.25.3"
 	},

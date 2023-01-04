@@ -1,12 +1,12 @@
 import type { SchulteTestResult } from '$lib/types/schulte';
 
 export function calcConcentration(result: SchulteTestResult) {
-  const isNormal = result.every((item) => item.time <= 40);
+  const isNormal = result.every((item) => item.timeTotal <= 40);
   const isBelowNormal = (
-    result.every((item) => item.time <= 60) &&
-    result.some((item) => item.time > 40)
+    result.every((item) => item.timeTotal <= 60) &&
+    result.some((item) => item.timeTotal > 40)
   );
-  const isLow = result.some((item) => item.time > 60);
+  const isLow = result.some((item) => item.timeTotal > 60);
 
   switch (true) {
     case isNormal:
@@ -32,7 +32,7 @@ export function calcStability(result: SchulteTestResult) {
 
     const nextItem = result[nextIndex];
 
-    return [...acc, item.time - nextItem.time];
+    return [...acc, item.timeTotal - nextItem.timeTotal];
   }, [] as number[]);
   const diffGtThanFour = diff.filter(value => Math.abs(value) > 3).length;
   const diffPositive = diff.filter(value => value >= 0).length;
@@ -56,14 +56,14 @@ export function calcExhausting(result: SchulteTestResult) {
 
     const nextItem = result[nextIndex];
 
-    return [...acc, item.time - nextItem.time];
+    return [...acc, item.timeTotal - nextItem.timeTotal];
   }, [] as number[]);
   const diffGtThanFour = diff.filter(value => Math.abs(value) > 3).length;
   const diffPositive = diff.filter(value => value >= 0).length;
 
   switch (true) {
     case diffGtThanFour === 4 && diffPositive === 4:
-    case result[result.length - 1].time - result[0].time > 9:
+    case result[result.length - 1].timeTotal - result[0].timeTotal > 9:
       return 'присутствует';
 
     default:

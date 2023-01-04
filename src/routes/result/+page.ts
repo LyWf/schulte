@@ -1,8 +1,8 @@
 import { redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
-import { unzipResult } from '../../lib/utils/schulte';
+import { unzipResult } from '$lib/utils/schulte';
 
-export const load: PageLoad = ({ url }) => {
+export const load = (({ url }) => {
   const value = url.searchParams.get('value');
 
   if (value) {
@@ -12,4 +12,4 @@ export const load: PageLoad = ({ url }) => {
   }
 
   throw redirect(302, '/start');
-}
+}) satisfies PageLoad;

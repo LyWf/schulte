@@ -57,32 +57,46 @@
 
   const lastNumber = 26;
   const numbers = shuffle(range(1, lastNumber));
-
-  let counter = 1;
-  let errors = 0;
   const startTime = Date.now();
 
-  let invalidChecked = 0;
+  let counter = 1;
+  let lastFoundTime = Date.now();
+  let lastInvalidFound = 0;
+
+  const result: SchulteTableResult = {
+    errors: 0,
+    timeTotal: 0,
+    timeFoundMin: 0,
+    timeFoundMax: 0,
+    timeFoundAvg: 0,
+  };
 
   const handleSelect = (num: number) => (event: Event) => {
+    lastInvalidFound = 0;
+
     if (counter === num) {
       counter += 1;
+      updateTime();
     } else {
       event.preventDefault();
-      invalidChecked = num;
-      errors += 1;
+      lastInvalidFound = num;
+      result.errors += 1;
     }
 
     if (counter >= lastNumber) {
-      dispatch('done', {
-        errors,
-        time: Math.round((Date.now() - startTime) / 1000),
-      });
+      dispatch('done', result);
     }
   }
 
-  const resetInvalidChecked = () => {
-    invalidChecked = 0;
+  const updateTime = () => {
+    const currentTime = Date.now();
+    const diff = Math.round((currentTime - lastFoundTime) / 1000);
+
+    lastFoundTime = currentTime;
+    result.timeFoundMin = Math.min(diff, result.timeFoundMin);
+    result.timeFoundMax = Math.max(diff, result.timeFoundMax);
+    result.timeFoundAvg = result.timeFoundAvg === 0 ? diff : Math.round((result.timeFoundAvg + diff) / 2);
+    result.timeTotal = Math.round((currentTime - startTime) / 1000);
   }
 </script>
 
@@ -94,8 +108,7 @@
         for={getCid(num)}
         on:click={handleSelect(num)}
         on:keypress={handleSelect(num)}
-        class:invalid={invalidChecked === num}
-        on:animationend={resetInvalidChecked}
+        class:invalid={lastInvalidFound === num}
       >
         {num}
       </label>
