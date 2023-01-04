@@ -22,6 +22,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import SchulteTable from './ShulteTable.svelte';
+  import ContinueButton from './ContinueButton.svelte';
   import type { SchulteTableResult, SchulteTestResult } from '$lib/types/schulte';
 
   const dispatch = createEventDispatcher<{ done: SchulteTestResult }>();
@@ -33,33 +34,17 @@
   const results: SchulteTestResult = [];
   $: isFirstRound = currentRound === 0;
 
-  let autoStartCountdown = 5;
-
   const handleFinishRound = (event: CustomEvent<SchulteTableResult>) => {
     results.push(event.detail);
     inProgress = false;
 
     if (currentRound === totalRounds) {
       dispatch('done', results);
-    } else {
-      runAutoStartCountdown();
     }
   }
   const handleStartRound = () => {
     currentRound += 1;
     inProgress = true;
-  }
-
-  const runAutoStartCountdown = () => {
-    const interval = setInterval(() => {
-      if (autoStartCountdown <= 0) {
-        clearInterval(interval);
-        autoStartCountdown = 5;
-        handleStartRound();
-      } else {
-        autoStartCountdown -= 1;
-      }
-    }, 1000);
   }
 </script>
 
@@ -77,7 +62,7 @@
     {:else}
       <h3>Отличный результат!</h3>
       <p>Осталось еще немного. Переход к следующей таблице произойдет автоматически через 5 секунд.</p>
-      <button type="button" on:click={handleStartRound}>Продолжить ({autoStartCountdown})</button>
+      <ContinueButton on:click={handleStartRound} />
     {/if}
   {/if}
 </div>
